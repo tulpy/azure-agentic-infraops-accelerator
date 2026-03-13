@@ -27,5 +27,12 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.rulers": [120],
     "editor.wordWrap": "wordWrapColumn"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "pip": true,
+    "/^python agent-output/my-webapp/02-waf-scores\\.py && python agent-output/my-webapp/03-des-cost-distribution\\.py && python agent-output/my-webapp/03-des-cost-projection\\.py$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
   }
 }

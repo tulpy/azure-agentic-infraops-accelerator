@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0",
+  "project": "my-webapp",
+  "iac_tool": "Bicep",
+  "region": "swedencentral",
+  "branch": "master",
+  "updated": "2026-03-12T15:35:00+00:00",
+  "current_step": 2,
+  "decisions": {
+    "region": "swedencentral",
+    "compliance": "GDPR, SOC 2",
+    "budget": "€500–€2,000/month",
+    "architecture_pattern": "N-Tier",
+    "deployment_strategy": "",
+    "complexity": "simple"
+  },
+  "open_findings": [],
+  "review_audit": {
+    "step_1": {
+      "complexity": "",
+      "passes_planned": 0,
+      "passes_executed": 0,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": []
+    },
+    "step_2": {
+      "complexity": "simple",
+      "passes_planned": 2,
+      "passes_executed": 2,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": ["challenger-review-subagent"]
+    },
+    "step_3.5": {
+      "complexity": "",
+      "passes_planned": 0,
+      "passes_executed": 0,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": []
+    },
+    "step_4": {
+      "complexity": "",
+      "passes_planned": 0,
+      "passes_executed": 0,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": []
+    },
+    "step_5": {
+      "complexity": "",
+      "passes_planned": 0,
+      "passes_executed": 0,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": []
+    },
+    "step_6": {
+      "complexity": "",
+      "passes_planned": 0,
+      "passes_executed": 0,
+      "skipped": [],
+      "skip_reasons": [],
+      "models_used": []
+    }
+  },
+  "steps": {
+    "1": {
+      "name": "Requirements",
+      "agent": "02-Requirements",
+      "status": "complete",
+      "sub_step": "phase_5_artifact",
+      "started": "2026-03-12T15:26:30+00:00",
+      "completed": "2026-03-12T15:30:00+00:00",
+      "artifacts": ["01-requirements.md"],
+      "context_files_used": ["00-session-state.json"]
+    },
+    "2": {
+      "name": "Architecture",
+      "agent": "03-Architect",
+      "status": "in_progress",
+      "sub_step": "phase_4_challenger",
+      "started": "2026-03-12T15:35:00+00:00",
+      "completed": null,
+      "artifacts": [
+        "02-architecture-assessment.md",
+        "03-des-cost-estimate.md",
+        "02-waf-scores.png",
+        "03-des-cost-distribution.png",
+        "03-des-cost-projection.png",
+        "challenge-findings-architecture-pass1.json",
+        "challenge-findings-cost-estimate.json"
+      ],
+      "context_files_used": ["00-session-state.json", "01-requirements.md"]
+    },
+    "3": {
+      "name": "Design",
+      "agent": "04-Design",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    },
+    "3.5": {
+      "name": "Governance",
+      "agent": "04g-Governance",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    },
+    "4": {
+      "name": "IaC Plan",
+      "agent": "",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    },
+    "5": {
+      "name": "IaC Code",
+      "agent": "",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    },
+    "6": {
+      "name": "Deploy",
+      "agent": "",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    },
+    "7": {
+      "name": "As-Built",
+      "agent": "08-As-Built",
+      "status": "pending",
+      "sub_step": null,
+      "started": null,
+      "completed": null,
+      "artifacts": [],
+      "context_files_used": []
+    }
+  }
+}

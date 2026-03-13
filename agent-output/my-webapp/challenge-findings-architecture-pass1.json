@@ -1,0 +1,63 @@
+{
+  "pass_number": 1,
+  "review_focus": "comprehensive",
+  "quality_score": 5,
+  "recommendation": "revise",
+  "findings": [
+    {
+      "id": "ARCH-P1-001",
+      "severity": "must_fix",
+      "title": "Azure SQL identity design is incomplete and internally inconsistent",
+      "waf_pillar": "Security",
+      "description": "The artifact states that the web app will use Managed Identity to access Azure SQL, that SQL authentication will be disabled, and that the SQL connection string will be stored in Key Vault. Those choices do not line up cleanly. For Azure SQL with Microsoft Entra authentication, Microsoft guidance requires a server-level Entra admin and a database principal for the app identity, such as CREATE USER FROM EXTERNAL PROVIDER. Without that bootstrap step, the App Service identity cannot connect at runtime. Storing a password-style SQL connection string in Key Vault also conflicts with the stated passwordless model.",
+      "recommendation": "Revise the architecture to show the full authentication path: set a SQL logical server Entra admin, create the database user or role mapping for the App Service managed identity, and use token-based SQL connections in the application. Remove the assumption that a secret-based SQL connection string in Key Vault is the primary access mechanism if SQL authentication is disabled.",
+      "effort": "medium"
+    },
+    {
+      "id": "ARCH-P1-002",
+      "severity": "should_fix",
+      "title": "Log retention in the architecture does not meet the stated 90-day requirement",
+      "waf_pillar": "Operational Excellence",
+      "description": "The requirements artifact sets application log retention at 90 days, but the architecture handoff and SKU tables specify a Log Analytics workspace with 31-day retention. Microsoft guidance for Log Analytics says the default analytics retention is 30 days and only some tables, such as AzureActivity and Application Insights tables, have 90-day defaults at no charge. App Service, SQL, and Key Vault diagnostic data will not all automatically satisfy a 90-day workspace-level retention target. The current design therefore overstates compliance and underprices monitoring.",
+      "recommendation": "Align the architecture and cost model to one explicit retention policy. Either set workspace and table-level retention to meet the 90-day requirement and price the increase, or revise the requirement if 31 days is actually acceptable.",
+      "effort": "low"
+    },
+    {
+      "id": "ARCH-P1-003",
+      "severity": "should_fix",
+      "title": "The published monthly cost likely understates the real Dev plus Prod run rate",
+      "waf_pillar": "Cost Optimization",
+      "description": "The architecture states that both Dev and Production environments are in scope and uses separate resource groups and names for each. However, the monthly estimate of about $117.40 is modeled as a single stack of App Service, SQL, Key Vault, Log Analytics, and Application Insights. The cost artifact is labeled as Development plus Production, but the line items do not clearly include both environments. That makes the approval-gate cost signal unreliable.",
+      "recommendation": "Restate the estimate as either production-only or a two-environment total. If Dev uses reduced SKUs, show the separate Dev and Prod line items explicitly so the budget comparison is defensible.",
+      "effort": "low"
+    },
+    {
+      "id": "ARCH-P1-004",
+      "severity": "should_fix",
+      "title": "Governance readiness is overstated before policy discovery has happened",
+      "waf_pillar": "Security",
+      "description": "The architecture says it is ready for implementation and hardcodes the four baseline tags, but Step 3.5 governance discovery has not yet run and there is no 04-governance-constraints artifact. Repository policy guidance is explicit that Azure Policy wins and discovered tags or deny controls can exceed the baseline defaults. This matters here because backup redundancy, public network settings, diagnostic requirements, and tag count can all be policy-driven. The current artifact treats those as settled when they are not.",
+      "recommendation": "Revise the handoff language to mark governance as a blocking dependency before code generation. Replace the fixed required-tag list with a provisional baseline and note that final tag and policy requirements come from governance discovery.",
+      "effort": "low"
+    },
+    {
+      "id": "ARCH-P1-005",
+      "severity": "should_fix",
+      "title": "RTO and RPO claims are not validated against a real failure model",
+      "waf_pillar": "Reliability",
+      "description": "The artifact accepts a single-region design with no geo-failover and no automated failover, while also carrying forward a 4-hour RTO and 1-hour RPO. That can be defensible only for a constrained failure model, but the artifact does not define whether those targets apply to app failure, database corruption, or full regional outage. Microsoft guidance also makes backup redundancy materially important: geo-restore depends on geo-redundant backups, while locally redundant or zone-redundant backups can disable geo-restore. Because governance and residency requirements can affect backup redundancy, the architecture has not yet proven that its disaster assumptions are achievable.",
+      "recommendation": "Scope the recovery targets explicitly. If RTO and RPO are only for in-region incidents, say so. If they include regional outage, add a concrete regional recovery design and the required SQL backup redundancy choice, then re-evaluate whether manual recovery still meets the target.",
+      "effort": "medium"
+    },
+    {
+      "id": "ARCH-P1-006",
+      "severity": "should_fix",
+      "title": "Public-endpoint design lacks compensating controls for SQL and Key Vault",
+      "waf_pillar": "Security",
+      "description": "Deferring private endpoints can be acceptable for an initial deployment, but the artifact does not define the compensating controls that make a public-endpoint posture safe enough. There is no explicit firewall strategy for Azure SQL, no statement about disabling broad Azure-service access, no Key Vault network-access posture, and no App Service access restriction model. As written, the architecture relies on identity and TLS alone while leaving the network surface underspecified.",
+      "recommendation": "Document the minimum public-endpoint hardening baseline now: SQL firewall behavior, Key Vault public network posture, whether trusted-services exceptions are allowed, and any App Service access restrictions. If those controls are intentionally deferred, call out the resulting residual risk clearly in the approval gate.",
+      "effort": "medium"
+    }
+  ],
+  "compact_for_parent": "The architecture is directionally sound for a low-cost starter deployment, but it is not ready to approve as written. The highest-risk issue is the incomplete Azure SQL Entra/Managed Identity design, and the artifact also overstates compliance and budget confidence by carrying a 31-day logging model and a likely single-environment cost into a Dev plus Prod plan. Governance and recovery assumptions are still treated as settled before they have been verified."
+}

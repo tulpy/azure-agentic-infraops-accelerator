@@ -1,0 +1,90 @@
+{
+  "artifact": "01-requirements.md",
+  "project": "my-webapp",
+  "review_type": "comprehensive",
+  "pass_number": 1,
+  "summary": {
+    "overall_assessment": "The artifact is a usable draft, but it is not ready to hand off cleanly to Architecture or Governance. It has real structure and mostly coherent baseline choices, but several requirements that materially affect design are still unresolved or internally inconsistent: ownership and go-live data are placeholders, the user identity model is ambiguous for a workload described as serving internal and external users, and production security posture is deferred even though production deployment is part of the success criteria. WAF coverage is present at a headline level, but Security, Reliability, Cost, and Operations are not yet specified with enough precision to support a confident Step 2 architecture assessment.",
+    "quality_score": 5,
+    "recommendation": "revise"
+  },
+  "findings": [
+    {
+      "id": "REQ-001",
+      "severity": "must_fix",
+      "title": "Project overview still contains placeholders",
+      "waf_pillar": "Operations",
+      "description": "The artifact claims the requirements are complete, but key fields still contain non-final values: the timeline says the target go-live is TBD, and the primary stakeholder is 'to be confirmed'. This is not a cosmetic issue. Downstream steps need a named owner for approvals, alert routing, required Owner-style tagging, and escalation decisions. The completeness table is therefore inaccurate.",
+      "recommendation": "Replace the placeholder timeline and stakeholder entries with actual values or explicitly mark the artifact incomplete until those values are known. Update the completeness summary so it reflects the real state of the artifact.",
+      "section": "Project Overview; Summary for Architecture Assessment > Requirements Completeness"
+    },
+    {
+      "id": "REQ-002",
+      "severity": "must_fix",
+      "title": "Identity model is ambiguous for internal and external users",
+      "waf_pillar": "Security",
+      "description": "The business context says the application is for internal and external users, while the NFRs and security section simply state 'Entra ID SSO'. That is not enough to design authentication. The architecture is materially different depending on whether external users are B2B guests in the same tenant, users in partner tenants, or customers using Entra External ID or another identity provider.",
+      "recommendation": "State exactly who the external users are, which identity system they will use, whether multi-tenant access is required, and whether customer-facing identity must be separated from workforce identity.",
+      "section": "Functional Requirements > User Types; Compliance & Security Requirements > Authentication & Authorization"
+    },
+    {
+      "id": "REQ-003",
+      "severity": "must_fix",
+      "title": "Production security posture is deferred even though production is in scope",
+      "waf_pillar": "Security",
+      "description": "The success criteria require deployment to Dev and Production, but the security sections defer production hardening to a future phase. The artifact says public endpoints are acceptable, private endpoints and VNet integration are not required initially, WAF is not required, and network isolation is deferred. That leaves the architect without a settled production security target.",
+      "recommendation": "Define the minimum required production posture now: whether production may use public endpoints, whether a reverse proxy/WAF layer is required, whether SQL and Key Vault must be privately reachable, and whether VNet integration is mandatory for production.",
+      "section": "Compliance & Security Requirements > Network Security; Summary for Architecture Assessment"
+    },
+    {
+      "id": "REQ-004",
+      "severity": "should_fix",
+      "title": "Reliability targets are not scoped to a failure model",
+      "waf_pillar": "Reliability",
+      "description": "The artifact sets 99.9% SLA, 4-hour RTO, and 1-hour RPO, but it does not define whether those targets apply to routine service failure, deployment failure, data corruption, or regional outage.",
+      "recommendation": "Clarify whether RTO and RPO apply only within a single-region recovery model or also to regional disaster, and state the required backup redundancy and zone-resilience expectations.",
+      "section": "Non-Functional Requirements (NFRs); Regional Preferences; Backup & Disaster Recovery"
+    },
+    {
+      "id": "REQ-005",
+      "severity": "should_fix",
+      "title": "Compliance controls are too thin for stated GDPR and SOC 2 scope",
+      "waf_pillar": "Security",
+      "description": "The artifact identifies GDPR and SOC 2 as applicable, but the supporting controls are high-level. It does not specify audit-log retention, access review frequency, secret rotation, database auditing, or classification of personal data.",
+      "recommendation": "Add concrete minimum controls for GDPR and SOC 2: PII classification, audit log retention, secret rotation expectations, access review cadence, data export/deletion requirements.",
+      "section": "Compliance & Security Requirements > Regulatory Frameworks; Recommended Security Controls"
+    },
+    {
+      "id": "REQ-006",
+      "severity": "should_fix",
+      "title": "Requirements mix business needs with prescriptive solution design",
+      "waf_pillar": "Cost",
+      "description": "Step 1 prescribes specific SKUs (App Svc S1 + SQL S1 + Redis + KV) and mentions Redis which is not justified by any functional requirement. Budget section says consumption-based pricing is preferred while the recommended pattern uses fixed standard tiers.",
+      "recommendation": "Reframe the architecture pattern section to describe capabilities and constraints, letting Step 2 evaluate specific SKUs and services.",
+      "section": "Functional Requirements > Architecture Pattern; Budget"
+    },
+    {
+      "id": "REQ-007",
+      "severity": "should_fix",
+      "title": "Complexity rationale assumes governance results not yet discovered",
+      "waf_pillar": "Operations",
+      "description": "The complexity section says 'no custom Azure Policy requirements', an unsupported assumption before Step 3.5 governance discovery.",
+      "recommendation": "Replace the claim with 'governance constraints pending live discovery in Step 3.5'.",
+      "section": "Complexity Classification"
+    },
+    {
+      "id": "REQ-008",
+      "severity": "should_fix",
+      "title": "Operations pillar lacks measurable handoff criteria",
+      "waf_pillar": "Operations",
+      "description": "The operational section lists email alerts and business-hours support but does not define alert severity expectations, incident ownership, log retention, restore-test cadence, or deployment constraints.",
+      "recommendation": "Add measurable operational requirements: alert ownership, minimum alert categories, log retention target, restore-test cadence, and production change-control constraints.",
+      "section": "Non-Functional Requirements (NFRs); Operational Requirements"
+    }
+  ],
+  "totals": {
+    "must_fix": 3,
+    "should_fix": 5,
+    "suggestion": 0
+  }
+}

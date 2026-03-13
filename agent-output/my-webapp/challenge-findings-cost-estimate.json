@@ -1,0 +1,54 @@
+{
+  "pass_number": 1,
+  "review_focus": "comprehensive",
+  "quality_score": 6,
+  "recommendation": "revise",
+  "findings": [
+    {
+      "id": "COST-P1-001",
+      "severity": "must_fix",
+      "title": "Monthly total only prices one environment despite Dev + Production scope",
+      "waf_pillar": "Cost Optimization",
+      "description": "The artifact declares Environment = Development + Production, the requirements require separate Dev and Production environments, and the architecture handoff also targets both. However, the line items and $117.40 total only price a single App Service plan, a single SQL database, one Key Vault workload, and one monitoring footprint. That means the headline monthly and annual totals understate the stated deployment scope. Using the artifact's own dev recommendation, a realistic combined monthly figure would be materially higher than $117.40 even before additional hardening costs.",
+      "recommendation": "Split the estimate into Production, Development, and Combined totals. Add the missing environment comparison section and make the headline monthly and annual totals reflect the full stated scope, not a single-environment subset.",
+      "effort": "medium"
+    },
+    {
+      "id": "COST-P1-002",
+      "severity": "must_fix",
+      "title": "90-day log retention requirement is not priced",
+      "waf_pillar": "Operational Excellence",
+      "description": "The requirements specify application log retention of 90 days, but the architecture and cost estimate model Log Analytics at 31-day retention and price only ingestion. The artifact does not include any extra retention charge, archive strategy, or explicit statement that the requirement has been relaxed. That leaves the estimate incomplete for a stated non-functional requirement and likely understates the monitoring cost basis.",
+      "recommendation": "Price the additional retention needed to reach 90 days, or document a compliant alternative such as archive/basic retention with revised assumptions and totals. The cost estimate should explicitly show how the 90-day requirement is met.",
+      "effort": "low"
+    },
+    {
+      "id": "COST-P1-003",
+      "severity": "should_fix",
+      "title": "Savings section is not mathematically coherent",
+      "waf_pillar": "Cost Optimization",
+      "description": "The savings table mixes mutually exclusive options and independent optimizations, but the headline says Total Potential Savings = ~$718/year, which matches only the B1 App Service row. Dev/Test pricing for S1 and B1 for dev are alternative App Service strategies, not additive savings, while Basic SQL and log caps may be additive depending on the target scenario. As written, the section can mislead readers about achievable savings.",
+      "recommendation": "Label each savings row as standalone, mutually exclusive, or stackable. Then provide one explicit optimized scenario with a true monthly and annual total instead of a headline that reflects only one row.",
+      "effort": "low"
+    },
+    {
+      "id": "COST-P1-004",
+      "severity": "should_fix",
+      "title": "Private endpoint savings delta is inconsistent with the deferred-cost section",
+      "waf_pillar": "Cost Optimization",
+      "description": "The Architecture Overview claims Public endpoints (no PE) save about $50/month, but the deferred-cost section prices 3 private endpoints at about $22/month. The artifact does not show the extra components needed to bridge the gap, such as private DNS or related networking charges. That makes the design-decision delta non-traceable and weakens confidence in the surrounding optimization guidance.",
+      "recommendation": "Reconcile the private-endpoint delta with explicit components and quantities, or remove the unsupported -$50/month figure. Every design-decision delta should tie back to priced line items.",
+      "effort": "low"
+    },
+    {
+      "id": "COST-P1-005",
+      "severity": "should_fix",
+      "title": "Variable-cost risk is understated for a public web workload",
+      "waf_pillar": "Reliability",
+      "description": "The unit prices for App Service, SQL, Key Vault, and base Log Analytics ingestion are internally consistent, but the risk treatment is too narrow. The artifact excludes egress as negligible, omits any explicit DNS or custom-domain assumption, and treats monitoring growth as the only major variable. For a web app serving internal and external users, outbound bandwidth and production-hardening deltas can become meaningful even if the base estimate stays well within budget.",
+      "recommendation": "Add a sensitivity range for outbound bandwidth and other small but real variable costs, and expand the cost risk indicators to include production hardening deltas rather than only DTU and log-ingestion volatility.",
+      "effort": "medium"
+    }
+  ],
+  "compact_for_parent": "The listed unit prices and single-environment arithmetic are internally consistent, but the artifact materially understates total spend because it declares Dev + Production scope while costing only one environment. It also omits the cost path for the 90-day log-retention requirement and contains inconsistent savings and private-endpoint delta math. Revise before using this estimate for budget or design decisions."
+}
